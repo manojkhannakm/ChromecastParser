@@ -11,8 +11,8 @@ const parser = require('./parser.js');
 process.stdout.write('Chromecast Parser\n\n');
 
 let imagesFile = config.imagesFile,
-        imagesFolder = config.imagesFolder,
-        imagesSize = config.imagesSize;
+    imagesFolder = config.imagesFolder,
+    imagesSize = config.imagesSize;
 
 let images = [];
 
@@ -39,7 +39,7 @@ async.series([
         let rl = readline.createInterface({
             input: process.stdin
         });
-        rl.on('line', (line) => {
+        rl.on('line', () => {
             loop = false;
 
             rl.close();
@@ -63,14 +63,14 @@ async.series([
                         let addImage = true;
 
                         for (let image of images) {
-                            if (tempImage.pageUrl == 'https://www.google.com/chromecast/backdrop/'
-                                    || tempImage.pageUrl == 'https://www.google.com/culturalinstitute/project/art-project') {
-                                if (tempImage.url == image.url) {
+                            if (tempImage.pageUrl === 'https://www.google.com/chromecast/backdrop/'
+                                || tempImage.pageUrl === 'https://www.google.com/culturalinstitute/project/art-project') {
+                                if (tempImage.url === image.url) {
                                     addImage = false;
                                     break;
                                 }
                             } else {
-                                if (tempImage.pageUrl == image.pageUrl) {
+                                if (tempImage.pageUrl === image.pageUrl) {
                                     addImage = false;
                                     break;
                                 }
@@ -94,14 +94,14 @@ async.series([
             });
         }, () => {
             return loop;
-        }, (error) => {
+        }, () => {
             callback();
         });
     },
     (callback) => {
         process.stdout.write('Writing images file...');
 
-        fs.writeFile(imagesFile, JSON.stringify(images, null, 4), (error) => {
+        fs.writeFile(imagesFile, JSON.stringify(images, null, 2), (error) => {
             if (!error) {
                 process.stdout.write('Successful!\n');
                 process.stdout.write('Wrote ' + images.length + ' image(s)!\n\n');
@@ -113,16 +113,16 @@ async.series([
         });
     },
     (callback) => {
-        if (imagesFolder == null || imagesFolder == '') {
+        if (!imagesFolder) {
             return;
         }
 
-        let imageWidth = 800, imageHeight = 600, imageSize = 800;
+        let imageWidth = '800', imageHeight = '600', imageSize = '800';
 
-        if (imagesSize != null) {
-            imageWidth = parseInt(imagesSize.split('x')[0]);
-            imageHeight = parseInt(imagesSize.split('x')[1]);
-            imageSize = Math.max(imageWidth, imageHeight);
+        if (imagesSize) {
+            imageWidth = imagesSize.split('x')[0];
+            imageHeight = imagesSize.split('x')[1];
+            imageSize = Math.max(parseInt(imageWidth), parseInt(imageHeight));
         }
 
         let loop = true;
@@ -130,7 +130,7 @@ async.series([
         let rl = readline.createInterface({
             input: process.stdin
         });
-        rl.on('line', (line) => {
+        rl.on('line', () => {
             loop = false;
 
             rl.close();
@@ -149,16 +149,16 @@ async.series([
             imageCount++;
 
             let imageUrl = image.url.replace('%size', imageSize)
-                    .replace('%width', imageWidth)
-                    .replace('%height', imageHeight);
+                .replace('%width', imageWidth)
+                .replace('%height', imageHeight);
 
             let imageFolder = imagesFolder + '/';
 
-            if (image.category != null) {
+            if (image.category) {
                 imageFolder += image.category + '/';
             }
 
-            mkdirp(imageFolder, (error) => {
+            mkdirp(imageFolder, () => {
                 let imageFile = imageFolder + imageUrl.substring(imageUrl.lastIndexOf('/') + 1,
                         imageUrl.indexOf('=', imageUrl.lastIndexOf('/'))) + '.jpg';
 
@@ -170,7 +170,7 @@ async.series([
 
                     process.stdout.write('Downloading image ' + imageCount + ' of ' + images.length + '...');
 
-                    request(imageUrl, (error, response, body) => {
+                    request(imageUrl, (error, response) => {
                         if (!error && response.headers['content-type'].startsWith('image')) {
                             process.stdout.write('Successful!\n');
                         } else {
@@ -181,7 +181,7 @@ async.series([
                     }).pipe(fs.createWriteStream(imageFile));
                 });
             });
-        }, (error) => {
+        }, () => {
             rl.close();
 
             callback();

@@ -21,87 +21,55 @@ exports.parse = (callback) => {
 
         let images = [];
 
-        for (let i in arrays) {
-            let array = arrays[i];
-
-            let title, author, category, subCategory, subSubCategory, url, pageUrl;
-
-            if (array[8] != null) {
-                if (array[8].length >= 1) {
-                    title = array[8][0];
-                }
-            } else if (array[10] != null) {
-                if (array[10].length >= 1) {
-                    title = array[10][0];
-                }
-            }
-
-            if (array[1] != null) {
-                author = array[1];
-            } else if (array[8] != null) {
-                if (array[8].length >= 3) {
-                    author = array[8][2];
-                }
-            } else if (array[10] != null) {
-                if (array[10].length >= 3) {
-                    author = array[10][2];
-                }
-            }
-
-            if (array[26] != null) {
-                if (array[26].length >= 1) {
-                    category = array[26][0][2];
-                }
-
-                if (array[26].length >= 2) {
-                    subCategory = array[26][1][2];
-                }
-            }
-
-            if (array[8] != null) {
-                if (array[8].length >= 2) {
-                    subSubCategory = array[8][1];
-                }
-            } else if (array[10] != null) {
-                if (array[10].length >= 2) {
-                    subSubCategory = array[10][1];
-                }
-            }
-
-            url = array[0].replace(/s\d+-w\d+-h\d+-/, 's%size-w%width-h%height-');
-
-            if (array[9] != null) {
-                pageUrl = array[9];
-            }
-
+        for (let array of arrays) {
             let image = {};
 
-            if (title != null && title.length > 0) {
-                image.title = title;
+            if (array[8]) {
+                if (array[8].length >= 1 && array[8][0]) {
+                    image.title = array[8][0];
+                }
+            } else if (array[10]) {
+                if (array[10].length >= 1 && array[10][0]) {
+                    image.title = array[10][0];
+                }
             }
 
-            if (author != null && author.length > 0) {
-                image.author = author;
+            if (array[1]) {
+                image.author = array[1];
+            } else if (array[8]) {
+                if (array[8].length >= 3 && array[8][2]) {
+                    image.author = array[8][2];
+                }
+            } else if (array[10]) {
+                if (array[10].length >= 3 && array[10][2]) {
+                    image.author = array[10][2];
+                }
             }
 
-            if (category != null && category.length > 0) {
-                image.category = category;
+            if (array[26]) {
+                if (array[26].length >= 1 && array[26][0][2]) {
+                    image.category = array[26][0][2];
+                }
+
+                if (array[26].length >= 2 && array[26][1][2]) {
+                    image.subCategory = array[26][1][2];
+                }
             }
 
-            if (subCategory != null && subCategory.length > 0) {
-                image.subCategory = subCategory;
+            if (array[8]) {
+                if (array[8].length >= 2 && array[8][1]) {
+                    image.subSubCategory = array[8][1];
+                }
+            } else if (array[10]) {
+                if (array[10].length >= 2 && array[10][1]) {
+                    image.subSubCategory = array[10][1];
+                }
             }
 
-            if (subSubCategory != null && subSubCategory.length > 0) {
-                image.subSubCategory = subSubCategory;
-            }
+            image.url = array[0].replace(/s\d+-w\d+-h\d+-/, 's%size-w%width-h%height-');
 
-            if (url != null && url.length > 0) {
-                image.url = url;
-            }
-
-            if (pageUrl != null && pageUrl.length > 0) {
-                image.pageUrl = pageUrl;
+            if (array[9]) {
+                image.pageUrl = array[9];
             }
 
             images.push(image);
