@@ -1,5 +1,3 @@
-'use strict';
-
 const CHROMECAST_URL = 'https://clients5.google.com/cast/chromecast/home';
 
 const request = require('request');

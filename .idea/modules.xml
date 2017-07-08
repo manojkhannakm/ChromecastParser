@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ChromecastParser.iml" filepath="$PROJECT_DIR$/.idea/ChromecastParser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/chromecast-parser.iml" filepath="$PROJECT_DIR$/.idea/chromecast-parser.iml" />
     </modules>
   </component>
 </project>
