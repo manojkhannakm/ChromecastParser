@@ -1,7 +1,7 @@
-const CHROMECAST_URL = 'https://clients5.google.com/cast/chromecast/home';
+const CHROMECAST_URL = "https://clients5.google.com/cast/chromecast/home";
 
-const request = require('request');
-const config = require('./config.json');
+const request = require("request");
+const config = require("./config.json");
 
 exports.parse = (callback) => {
     request({
@@ -64,7 +64,7 @@ exports.parse = (callback) => {
                 }
             }
 
-            image.url = array[0].replace(/s\d+-w\d+-h\d+-/, 's%size-w%width-h%height-');
+            image.url = array[0].replace(/s\d+-w\d+-h\d+-/, "s%size-w%width-h%height-");
 
             if (array[9]) {
                 image.pageUrl = array[9];

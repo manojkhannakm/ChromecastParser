@@ -1,12 +1,12 @@
-const fs = require('fs');
-const readline = require('readline');
-const async = require('async');
-const mkdirp = require('mkdirp');
-const request = require('request');
-const config = require('./config.json');
-const parser = require('./parser.js');
+const fs = require("fs");
+const readline = require("readline");
+const async = require("async");
+const mkdirp = require("mkdirp");
+const request = require("request");
+const config = require("./config.json");
+const parser = require("./parser.js");
 
-process.stdout.write('Chromecast Parser\n\n');
+process.stdout.write("Chromecast Parser\n\n");
 
 let imagesFile = config.imagesFile,
     imagesFolder = config.imagesFolder,
@@ -16,16 +16,16 @@ let images = [];
 
 async.series([
     (callback) => {
-        process.stdout.write('Reading images file...');
+        process.stdout.write("Reading images file...");
 
         fs.readFile(imagesFile, (error, data) => {
             if (!error) {
                 images = JSON.parse(data);
 
-                process.stdout.write('Successful!\n');
-                process.stdout.write('Read ' + images.length + ' image(s)!\n\n');
+                process.stdout.write("Successful!\n");
+                process.stdout.write("Read " + images.length + " image(s)!\n\n");
             } else {
-                process.stdout.write('Failed!\n\n');
+                process.stdout.write("Failed!\n\n");
             }
 
             callback();
@@ -37,21 +37,21 @@ async.series([
         let rl = readline.createInterface({
             input: process.stdin
         });
-        rl.on('line', () => {
+        rl.on("line", () => {
             loop = false;
 
             rl.close();
         });
 
-        process.stdout.write('(Note: Press enter to stop)\n\n');
+        process.stdout.write("(Note: Press enter to stop)\n\n");
 
         let parseCount = 0;
 
         async.doWhilst((callback) => {
             parseCount++;
 
-            process.stdout.write('#' + parseCount + '\n');
-            process.stdout.write('Parsing images json...');
+            process.stdout.write("#" + parseCount + "\n");
+            process.stdout.write("Parsing images json...");
 
             parser.parse((error, tempImages) => {
                 if (!error) {
@@ -61,8 +61,8 @@ async.series([
                         let addImage = true;
 
                         for (let image of images) {
-                            if (tempImage.pageUrl === 'https://www.google.com/chromecast/backdrop/'
-                                || tempImage.pageUrl === 'https://www.google.com/culturalinstitute/project/art-project') {
+                            if (tempImage.pageUrl === "https://www.google.com/chromecast/backdrop/"
+                                || tempImage.pageUrl === "https://www.google.com/culturalinstitute/project/art-project") {
                                 if (tempImage.url === image.url) {
                                     addImage = false;
                                     break;
@@ -82,10 +82,10 @@ async.series([
                         }
                     }
 
-                    process.stdout.write('Successful!\n');
-                    process.stdout.write('Parsed ' + imageCount + ' image(s)!\n\n');
+                    process.stdout.write("Successful!\n");
+                    process.stdout.write("Parsed " + imageCount + " image(s)!\n\n");
                 } else {
-                    process.stdout.write('Failed!\n\n');
+                    process.stdout.write("Failed!\n\n");
                 }
 
                 callback();
@@ -97,14 +97,14 @@ async.series([
         });
     },
     (callback) => {
-        process.stdout.write('Writing images file...');
+        process.stdout.write("Writing images file...");
 
         fs.writeFile(imagesFile, JSON.stringify(images, null, 2), (error) => {
             if (!error) {
-                process.stdout.write('Successful!\n');
-                process.stdout.write('Wrote ' + images.length + ' image(s)!\n\n');
+                process.stdout.write("Successful!\n");
+                process.stdout.write("Wrote " + images.length + " image(s)!\n\n");
             } else {
-                process.stdout.write('Failed!\n\n');
+                process.stdout.write("Failed!\n\n");
             }
 
             callback();
@@ -115,11 +115,11 @@ async.series([
             return;
         }
 
-        let imageWidth = '800', imageHeight = '600', imageSize = '800';
+        let imageWidth = "800", imageHeight = "600", imageSize = "800";
 
         if (imagesSize) {
-            imageWidth = imagesSize.split('x')[0];
-            imageHeight = imagesSize.split('x')[1];
+            imageWidth = imagesSize.split("x")[0];
+            imageHeight = imagesSize.split("x")[1];
             imageSize = Math.max(parseInt(imageWidth), parseInt(imageHeight));
         }
 
@@ -128,13 +128,13 @@ async.series([
         let rl = readline.createInterface({
             input: process.stdin
         });
-        rl.on('line', () => {
+        rl.on("line", () => {
             loop = false;
 
             rl.close();
         });
 
-        process.stdout.write('(Note: Press enter to stop)\n\n');
+        process.stdout.write("(Note: Press enter to stop)\n\n");
 
         let imageCount = 0;
 
@@ -146,33 +146,33 @@ async.series([
 
             imageCount++;
 
-            let imageUrl = image.url.replace('%size', imageSize)
-                .replace('%width', imageWidth)
-                .replace('%height', imageHeight);
+            let imageUrl = image.url.replace("%size", imageSize)
+                .replace("%width", imageWidth)
+                .replace("%height", imageHeight);
 
-            let imageFolder = imagesFolder + '/';
+            let imageFolder = imagesFolder + "/";
 
             if (image.category) {
-                imageFolder += image.category + '/';
+                imageFolder += image.category + "/";
             }
 
             mkdirp(imageFolder, () => {
-                let imageFile = imageFolder + imageUrl.substring(imageUrl.lastIndexOf('/') + 1,
-                        imageUrl.indexOf('=', imageUrl.lastIndexOf('/'))) + '.jpg';
+                let imageFile = imageFolder + imageUrl.substring(imageUrl.lastIndexOf("/") + 1,
+                        imageUrl.indexOf("=", imageUrl.lastIndexOf("/"))) + ".jpg";
 
-                fs.access(imageFile, 'f', (error) => {
+                fs.access(imageFile, "f", (error) => {
                     if (!error) {
                         callback();
                         return;
                     }
 
-                    process.stdout.write('Downloading image ' + imageCount + ' of ' + images.length + '...');
+                    process.stdout.write("Downloading image " + imageCount + " of " + images.length + "...");
 
                     request(imageUrl, (error, response) => {
-                        if (!error && response.headers['content-type'].startsWith('image')) {
-                            process.stdout.write('Successful!\n');
+                        if (!error && response.headers["content-type"].startsWith("image")) {
+                            process.stdout.write("Successful!\n");
                         } else {
-                            process.stdout.write('Failed!\n');
+                            process.stdout.write("Failed!\n");
                         }
 
                         callback();
