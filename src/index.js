@@ -158,7 +158,7 @@ async.series([
 
             mkdirp(imageFolder, () => {
                 let imageFile = imageFolder + imageUrl.substring(imageUrl.lastIndexOf("/") + 1,
-                        imageUrl.indexOf("=", imageUrl.lastIndexOf("/"))) + ".jpg";
+                    imageUrl.indexOf("=", imageUrl.lastIndexOf("/"))) + ".jpg";
 
                 fs.access(imageFile, "f", (error) => {
                     if (!error) {
